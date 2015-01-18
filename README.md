@@ -9,3 +9,11 @@ coding. Improvements include
 <li> Adding warnings and implied actions.
 <li> Adding keybindings.
 <li> Making it efficient in terms of work done.
+
+## Dependencies
+Code demands several dependencies to be met.
+<li> A working tkinter installation.
+<li> ffmpeg
+<li> ffmpeg thumbnailer as it will be used in the future applications.
+<li> VLC or mplayer according to the users choice. Mostly this will be dropped
+and any suitable video player might be added.
