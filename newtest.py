@@ -2,7 +2,7 @@ from Tkinter import *
 from ttk import *
 import tkFileDialog
 import os
-
+from PIL import ImageTk
 
 class MyApp:
     def __init__(self, parent):
@@ -208,32 +208,36 @@ class MyApp:
         self.spmslmt = len(self.spmslist)
         fp.close()
 
-        os.system("ls Workspace/MUSIC/ > list.txt")
+        os.system("ls Workspace/SPEECHWNOISE/ > list.txt")
         fp = open('list.txt')
         self.spnslist = fp.readlines()
         fp.close()
         self.spnslmt = len(self.spnslist)
 
         for i in range(0, self.msclmt):
+            self.igm = ImageTk.PhotoImage(file="Workspace/lists/"+"MUSIC"+"image"+str(i)+".jpg")
             attrib = "tab1mainbuttontab"+str(i)
-            self.attrib = Button(self.tab1, text=self.msclist[i], command=lambda i=i: self.playvideo(i, "MUSIC"))
-            self.attrib.pack(fill=BOTH)
+            Button(self.tab1, text=self.msclist[i], command=lambda i=i, image=self.igm: self.playvideo(i, "MUSIC"),image=self.igm, compound=BOTTOM).pack()
+            #self.attrib.pack(fill=BOTH)
         for i in range(0, self.spchlmt):
+            self.igm = ImageTk.PhotoImage(file="Workspace/lists/"+"SPEECH"+"image"+str(i)+".jpg")
             attrib = "tab2mainbuttontab" + str(i)
-            self.attrib = Button(self.tab2, text=self.spchlist[i], command=lambda i=i: self.playvideo(i, "SPEECH"))
-            self.attrib.pack(fill=BOTH)
+            Button(self.tab2, text=self.spchlist[i], command=lambda i=i, image=self.igm: self.playvideo(i, "SPEECH"),image=self.igm, compound=BOTTOM).pack()
         for i in range(0, self.slnclmt):
+            self.igm = ImageTk.PhotoImage(file="Workspace/lists/"+"SILENCE"+"image"+str(i)+".jpg")
             attrib = "tab3mainbuttontab" + str(i)
-            self.attrib = Button(self.tab3, text=self.slnclist[i], command=lambda i=i: self.playvideo(i, "SILENCE"))
-            self.attrib.pack(fill=BOTH)
+            Button(self.tab3, text=self.slnclist[i], command=lambda i=i, image=self.igm: self.playvideo(i, "SILENCE"),image=self.igm, compound=BOTTOM).pack()
+            #self.attrib.pack(fill=BOTH)
         for i in range(0, self.spmslmt):
+            self.igm = ImageTk.PhotoImage(file="Workspace/lists/"+"SPEECHWMUSIC"+"image"+str(i)+".jpg")
             attrib = "tab4mainbuttontab" + str(i)
-            self.attrib = Button(self.tab4, text=self.spmslist[i], command=lambda i=i: self.playvideo(i, "SPEECHWMUSIC"))
-            self.attrib.pack(fill=BOTH)
+            Button(self.tab4, text=self.spmslist[i], command=lambda i=i, image=self.igm: self.playvideo(i, "SPEECHWMUSIC"),image=self.igm, compound=BOTTOM).pack()
+            #self.attrib.pack(fill=BOTH)
         for i in range(0, self.spnslmt):
+            self.igm = ImageTk.PhotoImage(file="Workspace/lists/"+"SPEECHWNOISE"+"image"+str(i)+".jpg")
             attrib="tab5mainbuttontab" + str(i)
-            self.attrib = Button(self.tab5, text=self.spnslist[i], command=lambda i=i: self.playvideo(i, "SPEECHWNOISE"))
-            self.attrib.pack(fill=BOTH)
+            Button(self.tab5, text=self.spnslist[i], command=lambda i=i, image=self.igm: self.playvideo(i, "SPEECHWNOISE"),image=self.igm, compound=BOTTOM).pack()
+            #self.attrib.pack(fill=BOTH)
 
     # A dummy test function
     def callback(self, t):
