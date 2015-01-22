@@ -3,7 +3,7 @@ from ttk import *
 import tkFileDialog
 import os
 from PIL import ImageTk
-
+from Thumbnailer import *
 class MyApp:
     def __init__(self, parent):
 
@@ -180,6 +180,7 @@ class MyApp:
         # Note that the following part is required only if you have done the
         # cutting. Comment it or uncomment it accordingly. They are intended to
         # save the time of cutting the video.
+        lambda: thumbnailer()
         os.system("ls Workspace/MUSIC/ > list.txt")
         fp = open('list.txt')
         self.msclist = fp.readlines()
@@ -215,26 +216,38 @@ class MyApp:
         self.spnslmt = len(self.spnslist)
 
         for i in range(0, self.msclmt):
-            self.igm = ImageTk.PhotoImage(file="Workspace/lists/"+"MUSIC"+"image"+str(i)+".jpg")
+            self.igm = ImageTk.PhotoImage(file="Workspace/lists/"+"MUSIC"+"image"+str(i)+".png")
             attrib = "tab1mainbuttontab"+str(i)
-            Button(self.tab1, text=self.msclist[i], command=lambda i=i, image=self.igm: self.playvideo(i, "MUSIC"),image=self.igm, compound=BOTTOM).pack()
+            # This part is pretty specific I will change it soon.
+            # We will go with a 3*3 grid.
+            j=0
+            if i <= 2:
+                j = 0
+            elif i > 2 and i<=5:
+                j = 1
+            elif i > 5 and i<9:
+                j = 2
+            Button(self.tab1, text=self.msclist[i], command=lambda i=i, image=self.igm: self.playvideo(i, "MUSIC"),image=self.igm, compound=BOTTOM).grid(row=i%3, column=j)
+            Button(self.tab1, text="Next").grid(row=4, column=0)
+            Button(self.tab1, text="Next").grid(row=4, column=2)
+
             #self.attrib.pack(fill=BOTH)
         for i in range(0, self.spchlmt):
-            self.igm = ImageTk.PhotoImage(file="Workspace/lists/"+"SPEECH"+"image"+str(i)+".jpg")
+            self.igm = ImageTk.PhotoImage(file="Workspace/lists/"+"SPEECH"+"image"+str(i)+".png")
             attrib = "tab2mainbuttontab" + str(i)
             Button(self.tab2, text=self.spchlist[i], command=lambda i=i, image=self.igm: self.playvideo(i, "SPEECH"),image=self.igm, compound=BOTTOM).pack()
         for i in range(0, self.slnclmt):
-            self.igm = ImageTk.PhotoImage(file="Workspace/lists/"+"SILENCE"+"image"+str(i)+".jpg")
+            self.igm = ImageTk.PhotoImage(file="Workspace/lists/"+"SILENCE"+"image"+str(i)+".png")
             attrib = "tab3mainbuttontab" + str(i)
             Button(self.tab3, text=self.slnclist[i], command=lambda i=i, image=self.igm: self.playvideo(i, "SILENCE"),image=self.igm, compound=BOTTOM).pack()
             #self.attrib.pack(fill=BOTH)
         for i in range(0, self.spmslmt):
-            self.igm = ImageTk.PhotoImage(file="Workspace/lists/"+"SPEECHWMUSIC"+"image"+str(i)+".jpg")
+            self.igm = ImageTk.PhotoImage(file="Workspace/lists/"+"SPEECHWMUSIC"+"image"+str(i)+".png")
             attrib = "tab4mainbuttontab" + str(i)
             Button(self.tab4, text=self.spmslist[i], command=lambda i=i, image=self.igm: self.playvideo(i, "SPEECHWMUSIC"),image=self.igm, compound=BOTTOM).pack()
             #self.attrib.pack(fill=BOTH)
         for i in range(0, self.spnslmt):
-            self.igm = ImageTk.PhotoImage(file="Workspace/lists/"+"SPEECHWNOISE"+"image"+str(i)+".jpg")
+            self.igm = ImageTk.PhotoImage(file="Workspace/lists/"+"SPEECHWNOISE"+"image"+str(i)+".png")
             attrib="tab5mainbuttontab" + str(i)
             Button(self.tab5, text=self.spnslist[i], command=lambda i=i, image=self.igm: self.playvideo(i, "SPEECHWNOISE"),image=self.igm, compound=BOTTOM).pack()
             #self.attrib.pack(fill=BOTH)
