@@ -181,39 +181,77 @@ class MyApp:
         # cutting. Comment it or uncomment it accordingly. They are intended to
         # save the time of cutting the video.
         lambda: thumbnailer()
-        os.system("ls Workspace/MUSIC/ > list.txt")
-        fp = open('list.txt')
-        self.msclist = fp.readlines()
-        fp.close()
-        self.msclmt = len(self.msclist)
-        fp.close()
+        #os.system("ls Workspace/MUSIC/ > list.txt")
+        #fp = open('list.txt')
+        #self.msclist = fp.readlines()
+        #fp.close()
+        #self.msclmt = len(self.msclist)
+        #fp.close()
 
+        self.msclist = os.listdir(os.curdir+"/Workspace/MUSIC/")
+        for line in self.msclist:
+            if ".mp4" not in line:
+                self.msclist.remove(line)
+        self.msclmt = len(self.msclist)
+
+        """
         os.system("ls Workspace/SPEECH/ > list.txt")
         fp = open('list.txt')
         self.spchlist = fp.readlines()
         fp.close()
         self.spchlmt = len(self.spchlist)
         fp.close()
+        """
+        self.spchlist = os.listdir(os.curdir+"/Workspace/SPEECH/")
+        for line in self.spchlist:
+            if ".mp4" not in line:
+                self.spchlist.remove(line)
+        self.spchlmt = len(self.spchlist)
 
+        """
         os.system("ls Workspace/SILENCE/ > list.txt")
         fp = open('list.txt')
         self.slnclist = fp.readlines()
         fp.close()
         self.slnclmt = len(self.slnclist)
         fp.close()
+        """
+        self.slnclist = os.listdir(os.curdir+"/Workspace/SILENCE/")
+        for line in self.slnclist:
+            if ".mp4" not in line:
+                self.slnclist.remove(line)
+        self.slnclmt = len(self.slnclist)
 
+
+        """
         os.system("ls Workspace/SPEECHWMUSIC/ > list.txt")
         fp = open('list.txt')
         self.spmslist = fp.readlines()
         fp.close()
         self.spmslmt = len(self.spmslist)
         fp.close()
+        """
+        self.spmslist = os.listdir(os.curdir+"/Workspace/SPEECHWMUSIC/")
+        for line in self.spmslist:
+            if ".mp4" not in line:
+                self.spmslist.remove(line)
+        self.spmslmt = len(self.spmslist)
 
+        """
         os.system("ls Workspace/SPEECHWNOISE/ > list.txt")
         fp = open('list.txt')
         self.spnslist = fp.readlines()
         fp.close()
         self.spnslmt = len(self.spnslist)
+        """
+
+        self.spnslist = os.listdir(os.curdir+"/Workspace/SPEECHWNOISE/")
+        for line in self.spnslist:
+            if ".mp4" not in line:
+                self.spnslist.remove(line)
+        self.spnslmt = len(self.spnslist)
+
+
 
         for i in range(0, self.msclmt):
             self.igm = ImageTk.PhotoImage(file="Workspace/lists/"+"MUSIC"+"image"+str(i)+".png")
