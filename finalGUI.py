@@ -76,7 +76,7 @@ class MyApp:
         self.openingmsg = "Opening file......"
         self.fileopener.title("Opening File")
         Label(self.fileopener, text=self.openingmsg).pack()
-        self.openedfile = tkFileDialog.askopenfile(parent=self.fileopener, mode='rb', title="Choose a file")
+        self.openedfile = tkFileDialog.askopenfile(parent=self.fileopener, mode='rb', title="Choose a file",filetypes=[ ("Standard formats","*.avi *.mp4 *.flv"),("Open domain formats"," *.webm, *.mkv")])
         if self.openedfile is not None:
             data = self.openedfile.read()
             self.openedfile.close()
@@ -105,7 +105,7 @@ class MyApp:
         self.cutlistmsg = "Opening cut list......"
         self.cutlist.title("Opening File")
         Label(self.cutlist, text=self.cutlistmsg).pack()
-        self.openedcutlist = tkFileDialog.askopenfile(parent=self.cutlist, mode='rb', title="Choose a file")
+        self.openedcutlist = tkFileDialog.askopenfile(parent=self.cutlist, mode='rb', title="Choose a file", filetypes=[("Cut files", "*.txt, *.conf, *.ctl")])
         if self.openedcutlist is not None:
             data = self.openedcutlist.read()
             self.openedcutlist.close()
@@ -265,15 +265,27 @@ class MyApp:
                 j = 1
             elif i > 5 and i<9:
                 j = 2
-            Button(self.tab1, text=self.msclist[i], command=lambda i=i, image=self.igm: self.playvideo(i, "MUSIC"),image=self.igm, compound=BOTTOM).grid(row=i%3, column=j)
-            Button(self.tab1, text="Next").grid(row=4, column=0)
-            Button(self.tab1, text="Next").grid(row=4, column=2)
+            Button(self.tab1, text=self.msclist[i], command=lambda i=i, image=self.igm: self.playvideo(i, "MUSIC"),image=self.igm, compound=BOTTOM).grid(row=i%3, column=j, padx=67,pady=5)
+            if i>=9:
+                Button(self.tab1, text="Previous").grid(row=4, column=0)
+                Button(self.tab1, text="Next").grid(row=4, column=2)
 
             #self.attrib.pack(fill=BOTH)
         for i in range(0, self.spchlmt):
+            j=0
+            if i <= 2:
+                j = 0
+            elif i > 2 and i<=5:
+                j = 1
+            elif i > 5 and i<9:
+                j = 2
             self.igm = ImageTk.PhotoImage(file="Workspace/lists/"+"SPEECH"+"image"+str(i)+".png")
             attrib = "tab2mainbuttontab" + str(i)
-            Button(self.tab2, text=self.spchlist[i], command=lambda i=i, image=self.igm: self.playvideo(i, "SPEECH"),image=self.igm, compound=BOTTOM).pack()
+            Button(self.tab2, text=self.spchlist[i], command=lambda i=i, image=self.igm: self.playvideo(i, "SPEECH"),image=self.igm, compound=BOTTOM).grid(row=j, column=i%2, padx=67, pady=5)
+            if i>=9:
+                Button(self.tab2, text="Previous").grid(row=4, column=0)
+                Button(self.tab2, text="Next").grid(row=4, column=2)
+
         for i in range(0, self.slnclmt):
             self.igm = ImageTk.PhotoImage(file="Workspace/lists/"+"SILENCE"+"image"+str(i)+".png")
             attrib = "tab3mainbuttontab" + str(i)
