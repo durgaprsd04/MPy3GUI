@@ -76,14 +76,17 @@ class MyApp:
         self.openingmsg = "Opening file......"
         self.fileopener.title("Opening File")
         Label(self.fileopener, text=self.openingmsg).pack()
-        self.openedfile = tkFileDialog.askopenfile(parent=self.fileopener, mode='rb', title="Choose a file",filetypes=[ ("Standard formats","*.avi *.mp4 *.flv"),("Open domain formats"," *.webm, *.mkv")])
-        if self.openedfile is not None:
-            data = self.openedfile.read()
-            self.openedfile.close()
-        self.fileopener.destroy()
-        fp = open('Workspace/video.mp4', 'wb')
-        fp.write(data)
-        fp.close()
+        try:
+            self.openedfile = tkFileDialog.askopenfile(parent=self.fileopener, mode='rb', title="Choose a file",filetypes=[ ("Standard formats","*.avi *.mp4 *.flv"),("Open domain formats"," *.webm, *.mkv")])
+            if self.openedfile is not None:
+                data = self.openedfile.read()
+                self.openedfile.close()
+            self.fileopener.destroy()
+            fp = open('Workspace/video.mp4', 'wb')
+            fp.write(data)
+            fp.close()
+        except Exception as e:
+            pass
     # Function for saving the file.
 
     def save(self):
@@ -126,6 +129,9 @@ class MyApp:
 
     # For cutting the video
     # Warning this might take a long time.
+    # This function displays the thumbnails and provides links to them. There is
+    # a huge chance that this might not works
+
     def filevideocutter(self):
         self.cutter = Toplevel()
         self.cuttermsg = "Cutting the audio..."
@@ -175,132 +181,166 @@ class MyApp:
                     self.spnlmt = self.spnslmt + 1
         self.showresults()
 
+    # Now we need a function that pops up and shows the entire list of files
+
+    def popupwindow(self, filepath):
+        typeofsound = filepath.split("/")[2]
+        self.frame1 = Toplevel()
+        self.pop1 = Frame(self.frame1)
+        self.frame1.title(typeofsound)
+        self.canvas = Canvas(self.frame1, borderwidth=0)
+        self.pop2 = Frame(self.canvas)
+        self.sclbr = Scrollbar(self.frame1, orient="vertical", command=self.canvas.yview)
+        self.canvas.configure(yscrollcommand=self.sclbr.set)
+        self.sclbr.pack(side="right", fill="y")
+        self.canvas.pack(side="left", expand=True)
+        self.canvas.create_window((4, 4), window=self.pop2, tags="self.frame")
+        self.pop2.bind("<Configure>", self.OnFrameConfigure)
+
+        if typeofsound == "MUSIC":
+            mxlmt = self.msclmt
+            filelist = self.msclist
+        elif typeofsound == "SPEECH":
+            mxlmt = self.spchlmt
+            filelist = self.spchlist
+        elif typeofsound == "SILENCE":
+            mxlmt = self.slnclmt
+            filelist = self.slnclist
+        elif typeofsound == "SPEECHWMUSIC":
+            mxlmt = self.spmslmt
+            filelist = self.spmslist
+        elif typeofsound == "SPEECHWNOISE":
+            mxlmt = self.spnslmt
+            filelist = self.spnslist
+
+        print filelist
+
+        for i in range(0, mxlmt):
+            self.igm = ImageTk.PhotoImage(file="Workspace/lists/" + typeofsound + "image" + str(i) + ".png")
+            Button(self.pop2, text=filelist[i], command=lambda i=i, image=self.igm: self.playvideo(i, "MUSIC"),image=self.igm, compound=BOTTOM).grid(row = i , column=0, padx=45, pady=4)
+
+    def OnFrameConfigure(self, event):
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+
     # Function for displaying the results that are cut.
+
     def showresults(self):
         # Note that the following part is required only if you have done the
         # cutting. Comment it or uncomment it accordingly. They are intended to
-        # save the time of cutting the video.
-        lambda: thumbnailer()
-        #os.system("ls Workspace/MUSIC/ > list.txt")
-        #fp = open('list.txt')
-        #self.msclist = fp.readlines()
-        #fp.close()
-        #self.msclmt = len(self.msclist)
-        #fp.close()
+        # save the time of thumnail generation of  the video.
+        # thumbnailer()
+        # os.system("ls Workspace/MUSIC/ > list.txt")
+        # fp = open('list.txt')
+        # self.msclist = fp.readlines()
+        # fp.close()
+        # self.msclmt = len(self.msclist)
+        # fp.close()
 
-        self.msclist = os.listdir(os.curdir+"/Workspace/MUSIC/")
+        self.msclist = os.listdir(os.curdir + "/Workspace/MUSIC/")
         for line in self.msclist:
             if ".mp4" not in line:
                 self.msclist.remove(line)
+        self.msclist.sort()
         self.msclmt = len(self.msclist)
 
-        """
-        os.system("ls Workspace/SPEECH/ > list.txt")
-        fp = open('list.txt')
-        self.spchlist = fp.readlines()
-        fp.close()
-        self.spchlmt = len(self.spchlist)
-        fp.close()
-        """
-        self.spchlist = os.listdir(os.curdir+"/Workspace/SPEECH/")
+        self.spchlist = os.listdir(os.curdir + "/Workspace/SPEECH/")
         for line in self.spchlist:
             if ".mp4" not in line:
                 self.spchlist.remove(line)
+        self.spchlist.sort()
         self.spchlmt = len(self.spchlist)
 
-        """
-        os.system("ls Workspace/SILENCE/ > list.txt")
-        fp = open('list.txt')
-        self.slnclist = fp.readlines()
-        fp.close()
-        self.slnclmt = len(self.slnclist)
-        fp.close()
-        """
-        self.slnclist = os.listdir(os.curdir+"/Workspace/SILENCE/")
+        self.slnclist = os.listdir(os.curdir + "/Workspace/SILENCE/")
         for line in self.slnclist:
             if ".mp4" not in line:
                 self.slnclist.remove(line)
+        self.slnclist.sort()
         self.slnclmt = len(self.slnclist)
 
-
-        """
-        os.system("ls Workspace/SPEECHWMUSIC/ > list.txt")
-        fp = open('list.txt')
-        self.spmslist = fp.readlines()
-        fp.close()
-        self.spmslmt = len(self.spmslist)
-        fp.close()
-        """
-        self.spmslist = os.listdir(os.curdir+"/Workspace/SPEECHWMUSIC/")
+        self.spmslist = os.listdir(os.curdir + "/Workspace/SPEECHWMUSIC/")
         for line in self.spmslist:
             if ".mp4" not in line:
                 self.spmslist.remove(line)
+        self.spmslist.sort()
         self.spmslmt = len(self.spmslist)
 
-        """
-        os.system("ls Workspace/SPEECHWNOISE/ > list.txt")
-        fp = open('list.txt')
-        self.spnslist = fp.readlines()
-        fp.close()
-        self.spnslmt = len(self.spnslist)
-        """
 
-        self.spnslist = os.listdir(os.curdir+"/Workspace/SPEECHWNOISE/")
+        self.spnslist = os.listdir(os.curdir + "/Workspace/SPEECHWNOISE/")
         for line in self.spnslist:
             if ".mp4" not in line:
                 self.spnslist.remove(line)
+        self.spnslist.sort()
         self.spnslmt = len(self.spnslist)
-
-
-
+         # self.attrib.pack(fill = BOTH)
         for i in range(0, self.msclmt):
-            self.igm = ImageTk.PhotoImage(file="Workspace/lists/"+"MUSIC"+"image"+str(i)+".png")
+            self.igm = ImageTk.PhotoImage(file="Workspace/lists/" + "MUSIC" + "image" + str(i) + ".png")
             attrib = "tab1mainbuttontab"+str(i)
             # This part is pretty specific I will change it soon.
             # We will go with a 3*3 grid.
-            j=0
+            j = 0
             if i <= 2:
                 j = 0
-            elif i > 2 and i<=5:
+            elif i > 2 and i <= 5:
                 j = 1
-            elif i > 5 and i<9:
+            elif i > 5 and i < 9:
                 j = 2
             Button(self.tab1, text=self.msclist[i], command=lambda i=i, image=self.igm: self.playvideo(i, "MUSIC"),image=self.igm, compound=BOTTOM).grid(row=i%3, column=j, padx=67,pady=5)
-            if i>=9:
-                Button(self.tab1, text="Previous").grid(row=4, column=0)
-                Button(self.tab1, text="Next").grid(row=4, column=2)
-
-            #self.attrib.pack(fill=BOTH)
+            if i >= 9:
+                Button(self.tab1, text="More...", command = lambda filepath = os.curdir + "/Workspace/MUSIC" : self.popupwindow(filepath)).grid(row=4, column=1)
         for i in range(0, self.spchlmt):
-            j=0
+            j = 0
             if i <= 2:
                 j = 0
-            elif i > 2 and i<=5:
+            elif i > 2 and i <= 5:
                 j = 1
-            elif i > 5 and i<9:
+            elif i > 5 and i < 9:
                 j = 2
-            self.igm = ImageTk.PhotoImage(file="Workspace/lists/"+"SPEECH"+"image"+str(i)+".png")
+            self.igm = ImageTk.PhotoImage(file="Workspace/lists/" + "SPEECH" + "image" + str(i) + ".png")
             attrib = "tab2mainbuttontab" + str(i)
-            Button(self.tab2, text=self.spchlist[i], command=lambda i=i, image=self.igm: self.playvideo(i, "SPEECH"),image=self.igm, compound=BOTTOM).grid(row=j, column=i%2, padx=67, pady=5)
-            if i>=9:
+            Button(self.tab2, text=self.spchlist[i], command=lambda i=i, image=self.igm: self.playvideo(i, "SPEECH"),image=self.igm, compound=BOTTOM).grid(row=j, column=i%3, padx=67, pady=5)
+            if i >= 9:
                 Button(self.tab2, text="Previous").grid(row=4, column=0)
                 Button(self.tab2, text="Next").grid(row=4, column=2)
 
         for i in range(0, self.slnclmt):
+            j = 0
+            if i <= 2:
+                j = 0
+            elif i > 2 and i <= 5:
+                j = 1
+            elif i > 5 and i < 9:
+                j = 2
+
             self.igm = ImageTk.PhotoImage(file="Workspace/lists/"+"SILENCE"+"image"+str(i)+".png")
             attrib = "tab3mainbuttontab" + str(i)
-            Button(self.tab3, text=self.slnclist[i], command=lambda i=i, image=self.igm: self.playvideo(i, "SILENCE"),image=self.igm, compound=BOTTOM).pack()
+            Button(self.tab3, text=self.slnclist[i], command=lambda i=i, image=self.igm: self.playvideo(i, "SILENCE"),image=self.igm, compound=BOTTOM).grid(row=j, column=i%3, padx=67, pady=5)
             #self.attrib.pack(fill=BOTH)
         for i in range(0, self.spmslmt):
+            j = 0
+            if i <= 2:
+                j = 0
+            elif i > 2 and i <= 5:
+                j = 1
+            elif i > 5 and i < 9:
+                j = 2
+
             self.igm = ImageTk.PhotoImage(file="Workspace/lists/"+"SPEECHWMUSIC"+"image"+str(i)+".png")
             attrib = "tab4mainbuttontab" + str(i)
-            Button(self.tab4, text=self.spmslist[i], command=lambda i=i, image=self.igm: self.playvideo(i, "SPEECHWMUSIC"),image=self.igm, compound=BOTTOM).pack()
+            Button(self.tab4, text=self.spmslist[i], command=lambda i=i, image=self.igm: self.playvideo(i, "SPEECHWMUSIC"),image=self.igm, compound=BOTTOM).grid(row=j, column=i%3, padx=67, pady=5)
             #self.attrib.pack(fill=BOTH)
         for i in range(0, self.spnslmt):
-            self.igm = ImageTk.PhotoImage(file="Workspace/lists/"+"SPEECHWNOISE"+"image"+str(i)+".png")
-            attrib="tab5mainbuttontab" + str(i)
-            Button(self.tab5, text=self.spnslist[i], command=lambda i=i, image=self.igm: self.playvideo(i, "SPEECHWNOISE"),image=self.igm, compound=BOTTOM).pack()
-            #self.attrib.pack(fill=BOTH)
+            j = 0
+            if i <= 2:
+                j = 0
+            elif i > 2 and i <= 5:
+                j = 1
+            elif i > 5 and i < 9:
+                j = 2
+
+            self.igm = ImageTk.PhotoImage(file="Workspace/lists/" + "SPEECHWNOISE" + "image" + str(i) + ".png")
+            attrib = "tab5mainbuttontab" + str(i)
+            Button(self.tab5, text=self.spnslist[i], command=lambda i=i, image=self.igm: self.playvideo(i, "SPEECHWNOISE"),image=self.igm, compound=BOTTOM).grid(row=j, column=i%3, padx=67, pady=5)
+            # self.attrib.pack(fill=BOTH)
 
     # A dummy test function
     def callback(self, t):
