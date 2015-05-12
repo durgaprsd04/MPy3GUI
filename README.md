@@ -5,11 +5,11 @@ A simple program intended as a wrapper for some python code. Mostly done using
 tkinter and using ttk class for a better appearance. Pretty bad part with the
 coding. Improvements include
 
-* Splitting the code to several parts
-* Adding warnings and implied actions.
-* Adding keybindings.
-* Making it efficient in terms of work done.
-* Including a Scrollbar??
+* Removing unwanted comments and comment on necessary stuff.
+* Terminal displays made minimal and meaningful
+* Adding listbox click-open functionality.
+* Multithreading(optional might start a branch for it)
+* Please wait message dialog boxes.
 
 ## Dependencies
 Code demands several dependencies to be met.
@@ -17,23 +17,16 @@ Code demands several dependencies to be met.
 * ffmpeg
 * VLC or mplayer according to the users choice. Mostly this will be dropped
 and any suitable video player might be added.
-* As of 22/1/2015 mplayer is a a must. It is the one which generates thumbnails
-  and ImageMagick is the one which scales them.
-* mencoder is used along with mplayer for thumbnail generation.
-* Thumbnailer heavily depends on os utilities, need to be redone for any system
-  other than linux based.
+* As of 12/5/2015 mplayer is not a  must. User have option to choose players
+* Thumbnailer is done using ffmpegthumbnailer, standard application for this.
 
 ## User guide
 The basic functionalities of the program include, reading a Video file,
-extracting audio layer from it. Finding the positions of the audio cuts and
-generating a configuration file that contains the exact details and timings of
-different sound classes. The program up on request splits these into five
-classes and shows a grid view of these. Users can save the file according to
-need.
+extracting audio layer from it saving it under Workspace/audio.mp3 . Finding the positions of the audio cuts and
+generating a cut list is done by matlab executable(not available here)  that contains the exact details and timings of
+different sound classes, which program splits and puts in a folder named in
+accordance to sound class it belongs to and shows a grid view of these.
 ### Things to do to get started
-* Users should create a Workspace Directory.
-* Open a video and save it to the Workspace.
-* Provide a configuration file.
-* Segment the video file according to the configuration file provided.
-* Most of this has to have some or another tweaking to be done to make it
-  better. For the time being this is the story.
+* Open a video file( which automatically gets saved to workspace and audio
+  layer will be extracted.
+* Select cut video option, it will do the rest and provide you with thumbnails.
